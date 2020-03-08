@@ -1,11 +1,15 @@
 import xml.etree.ElementTree as ET
 
 
-def normalize(path, initial_run=None):
-    root = parse_tree(path)
+def normalize(path, output_path=None, initial_run=None):
+    if not output_path:
+        output_path = path
+    tree = ET.parse(path)
+    root = tree.getroot()
     if not initial_run:
         initial_run = find_initial_run(root)
-    update_run(root, path, initial_run)
+    update_run(root, initial_run)
+    tree.write(output_path)
 
 
 def find_initial_run(root):
@@ -18,13 +22,16 @@ def find_initial_run(root):
     return initial_run
 
 
-def parse_tree(path):
-    """ Parse path to return root node """
-    return ET.parse(path).getroot()
-
-
-def update_run(root, path, initial_run):
+def update_run(root, initial_run):
     """ Update the splits file with path to subtract initial_run
     from id """
-    # TODO update xml to change all id references
-    pass
+    paths = ["AttemptHistory/Attempt", "Segments/Segment/SegmentHistory/Time"]
+    for path in paths:
+        update_node_ids(root, initial_run, path)
+    return root
+
+
+def update_node_ids(root, initial_run, path):
+    for item in root.findall(path):
+        run_id = int(item.attrib["id"])
+        item.attrib["id"] = str(run_id - initial_run + 1)

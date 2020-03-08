@@ -1,5 +1,8 @@
 import os
+import shutil
+import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 
 from livesplit_id_normalizer import livesplit_id_normalizer as norm
 
@@ -10,10 +13,17 @@ RUN1_PATH = os.path.join(FIXTURES_PATH, "run1.xml")
 
 class TestLivesplitIdNormalizer(unittest.TestCase):
     def setUp(self):
-        self.root = norm.parse_tree(RUN1_PATH)
+        self.temp_dir = tempfile.mkdtemp()
+        self.root = ET.parse(RUN1_PATH).getroot()
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir)
 
     def test_find_initial_run(self):
         self.assertEqual(3, norm.find_initial_run(self.root))
 
     def test_normalize(self):
-        norm.normalize(RUN1_PATH)
+        output_path = os.path.join(self.temp_dir, "tmp.xml")
+        norm.normalize(RUN1_PATH, output_path=output_path)
+        root = ET.parse(output_path).getroot()
+        self.assertEqual(1, norm.find_initial_run(root))
