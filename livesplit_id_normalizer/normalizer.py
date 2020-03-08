@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 
 def normalize(path, output_path=None, initial_run=None):
     if not output_path:
-        output_path = path
+        output_path = path  # pragma: no cover
     tree = ET.parse(path)
     root = tree.getroot()
     if not initial_run:
