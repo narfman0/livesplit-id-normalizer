@@ -4,7 +4,7 @@ import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 
-from livesplit_id_normalizer import livesplit_id_normalizer as norm
+from livesplit_id_normalizer import normalizer
 
 TESTS_PATH = os.path.dirname(os.path.realpath(__file__))
 FIXTURES_PATH = os.path.join(TESTS_PATH, "fixtures")
@@ -20,10 +20,10 @@ class TestLivesplitIdNormalizer(unittest.TestCase):
         shutil.rmtree(self.temp_dir)
 
     def test_find_initial_run(self):
-        self.assertEqual(3, norm.find_initial_run(self.root))
+        self.assertEqual(3, normalizer.find_initial_run(self.root))
 
     def test_normalize(self):
         output_path = os.path.join(self.temp_dir, "tmp.xml")
-        norm.normalize(RUN1_PATH, output_path=output_path)
+        normalizer.normalize(RUN1_PATH, output_path=output_path)
         root = ET.parse(output_path).getroot()
-        self.assertEqual(1, norm.find_initial_run(root))
+        self.assertEqual(1, normalizer.find_initial_run(root))
