@@ -27,6 +27,13 @@ Install via pip::
 
     pip install livesplit-id-normalizer
 
+Usage
+-----
+
+TO run, navigate to the directory containing the file and run::
+
+    livesplit-normalize splitsfile.xml
+
 Development
 -----------
 
